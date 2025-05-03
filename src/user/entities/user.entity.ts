@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Song } from '../../song/entities/song.entity';
+import { Playlist } from '../../playlist/entities/playlist.entity';
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -46,4 +47,7 @@ export class User {
 
     @OneToMany(() => Song, (song) => song.user, { nullable: true })
     songs: Song[]; 
+
+    @OneToMany(() => Playlist, (playlist) => playlist.user, { nullable: true })
+    playlists: Playlist[];
 }

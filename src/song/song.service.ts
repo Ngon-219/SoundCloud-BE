@@ -63,16 +63,14 @@ export class SongService {
 
     await this.songRepository.save(newSong);
 
-    const songCategoryEntities = category.map((item) =>{
-      const newSongCategory = this.songCategoryRepository.create({
+    const songCategoryEntities = category.map((item) =>
+      this.songCategoryRepository.create({
         song: newSong,
         category: item,
       })
-
-      this.songCategoryRepository.save(newSongCategory)
-    }
     );
-
+  
+  this.songCategoryRepository.saveMany(songCategoryEntities)
 
     return {
       message: "upload song successfully",

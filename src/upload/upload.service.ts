@@ -18,7 +18,11 @@ export class UploadService {
   async create(file: Express.Multer.File, folder: string) {
     // console.log('File received:', file);  
     if (!file) {
-      throw new Error('No file provided');
+      return {
+        message: 'No file provided',
+        url: "https://res.cloudinary.com/dt2nww20n/image/upload/v1745426271/images/1745426261685-Screenshot%202025-04-23%20233635.png.png",
+        public_id: 'default-image',
+      }
     }
   
     const filename = new Date().getTime() + '-' + file.originalname;

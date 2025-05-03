@@ -13,6 +13,10 @@ export class BaseRepository<T> {
     return this.repository.save(data);
   }
 
+  async saveMany(data: DeepPartial<T>[]): Promise<T[]> {
+    return this.repository.save(data);
+  }
+
   async findAll(): Promise<T[]> {
     return this.repository.find();
   }

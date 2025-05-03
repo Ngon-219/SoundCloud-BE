@@ -11,6 +11,9 @@ import { SongModule } from './song/song.module';
 import { Song } from './song/entities/song.entity';
 import { SongCategory } from './song/entities/song-category.entity';
 import { Category } from './song/entities/category.entity';
+import { PlaylistModule } from './playlist/playlist.module';
+import { Playlist } from './playlist/entities/playlist.entity';
+import { SongPlaylist } from './playlist/entities/song-playlist.entity';
 
 @Module({
   imports: [
@@ -20,7 +23,7 @@ import { Category } from './song/entities/category.entity';
       port: 5432,
       password: 'admin',
       username: 'admin',
-      entities: [User, Song, SongCategory, Category],
+      entities: [User, Song, SongCategory, Category, Playlist, SongPlaylist],
       database: 'soundcloud',
       synchronize: true,
       logging: true,
@@ -33,6 +36,7 @@ import { Category } from './song/entities/category.entity';
     AuthModule,
     UploadModule,
     SongModule,
+    PlaylistModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthModule],
