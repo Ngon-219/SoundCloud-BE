@@ -12,6 +12,8 @@ import { Readable } from 'stream';
 import * as ffmpeg from 'fluent-ffmpeg';
 import { CategoryRepository } from '@/repositories/category.repository';
 import { SongCategoryRepository } from '@/repositories/songCategory.repository';
+import { LikeSong } from '@/like-song/entities/like-song.entity';
+import { LikeSongRepository } from '@/repositories/like-song.repository';
 
 export enum folderName  {
   music = "music",
@@ -25,12 +27,13 @@ export class SongService {
     private songRepository: SongRepository,
     private userRepository: UserRepository,
     private categoryRepository: CategoryRepository,
-    private songCategoryRepository: SongCategoryRepository
+    private songCategoryRepository: SongCategoryRepository,
+    private readonly LikeSongRepository: LikeSongRepository,
   ) {
 
   }
 
-  async create(file: Express.Multer.File[], user: User, category_id: string[]) {
+  async create(file: Express.Multer.File[], user: User, category_id: string[], song_name: string) {
     const metadata = await parseBuffer(file[0].buffer, file[0].mimetype);
     const durationInSeconds = metadata.format.duration || 0;
     const uploadMusic = await this.uploadService.create(file[0], folderName.music);
@@ -58,6 +61,7 @@ export class SongService {
         updated_at: new Date(),
         user: user,
         duration: Math.floor(durationInSeconds),
+        name: song_name,
       }
     )
 
@@ -78,61 +82,37 @@ export class SongService {
     }
   }
 
-  async getSongBuffer(song_id: string) {
-    const song = await this.songRepository.findOne({song_id: song_id});
+  async getTopTenSong(user: User) {
+    const topTenSongs = await this.songRepository.getTopTenSongs();
+  
+    return topTenSongs;
+  }
+  
+
+  async playSong(song_id: string, user: any) {
+    const song = await this.songRepository.getSongById(song_id);
+    const checkLikeSong = await this.LikeSongRepository.checkLikeSong(user, song);
+  
     if (!song) {
       throw new Error('Song not found');
     }
-
-    const segments: Buffer[] = [];
-
-    const response = await axios.get(song.link_song, { responseType: 'arraybuffer' });
-
-    const fileBuffer = Buffer.from(response.data);
-
-    console.log("song response from cloudaniry", fileBuffer);
-
-    const durationInSeconds = song.duration || 75;
-    const totalSegments = Math.ceil(durationInSeconds / 20);
-
-    for (let i = 0; i < totalSegments; i++) {
-      const start = i * 20;
-      const end = Math.min((i + 1) * 20, durationInSeconds);
-
-      const buffer = await this.cutAudioToBuffer(fileBuffer, start, end);
-      segments.push(buffer);
-    }
-
-    return segments;
-  }
-
-  private cutAudioToBuffer(inputBuffer: Buffer, start: number, end: number): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-      const inputStream = Readable.from(inputBuffer);
-      const outputBuffers: Buffer[] = [];
-
-      const ffmpegProcess = ffmpeg(inputStream)
-        .inputFormat('mp3')
-        .setStartTime(start)
-        .setDuration(end - start)
-        .format('mp3')
-        .on('error', (err) => {
-          console.error('FFmpeg error:', err);
-          reject(err);
-        });
-
-      const outputStream = ffmpegProcess.pipe();
-
-      outputStream.on('data', (chunk: Buffer) => {
-        outputBuffers.push(chunk);
-      });
-
-      outputStream.on('end', () => {
-        resolve(Buffer.concat(outputBuffers));
-      });
+  
+    const updateView = await this.songRepository.preload({
+      song_id: song.song_id,
+      view: song.view + 1,
     });
-  }
 
+    await this.songRepository.save(updateView);
+
+    const {user: _user, ...rest} = song;
+  
+    return {
+      is_liked: checkLikeSong,
+      artist: song.user.username,
+      ...rest,
+    };
+  }
+  
 
   findAll() {
     return this.songRepository.findAll();

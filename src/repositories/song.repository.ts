@@ -21,5 +21,21 @@ export class SongRepository extends BaseRepository<Song> {
       .where('playlist.playlist_id = :playlistId', { playlistId })
       .getMany();
   }
-  
+
+  async getTopTenSongs() {
+    return this.songRepo
+      .createQueryBuilder('song')
+      .orderBy('song.view', 'DESC')
+      .take(10)
+      .getMany();
+  }
+   
+  async getSongById(songId: string) {
+    return this.songRepo
+      .createQueryBuilder('song')
+      .leftJoinAndSelect('song.user', 'user')
+      .where('song.song_id = :songId', { songId })
+      .getOne();
+  }
+
 }

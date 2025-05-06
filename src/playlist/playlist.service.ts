@@ -25,7 +25,7 @@ export class PlaylistService {
       )
     );
   
-    const playlist = this.playlistRepository.create({
+    const playlist = await this.playlistRepository.create({
       name: createPlaylistDto.name,
       is_public: createPlaylistDto.is_public,
       user: user,
@@ -48,7 +48,7 @@ export class PlaylistService {
   
 
   findAll() {
-    return `This action returns all playlist`;
+    return this.playlistRepository.findAll();
   }
 
   findOne(id: string) {

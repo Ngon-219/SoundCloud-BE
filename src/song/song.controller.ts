@@ -16,9 +16,16 @@ export class SongController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth('jwt')
   @UseInterceptors(FilesInterceptor('files'))
-  create(@UploadedFiles() files: Express.Multer.File[], @Req() req: any, @Body('category_id') category_id: string[]) {
-    console.log("category_id", category_id);
-    return this.songService.create(files, req.user, category_id);
+  create(@UploadedFiles() files: Express.Multer.File[], @Req() req: any, @Body('category_id') category_id: string[], @Body('song_name') song_name: string) {
+    console.log("files", files);
+    return this.songService.create(files, req.user, category_id, song_name);
+  }
+
+  @Get('get-top-ten-song')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  getTopTenSong(@Req() req: any) {
+    return this.songService.getTopTenSong(req.user);
   }
 
   @Get()
@@ -27,8 +34,10 @@ export class SongController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.songService.getSongBuffer(id);
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  findOne(@Param('id') id: string, @Req() req: any) {
+    return this.songService.playSong(id, req.user);
   }
 
   @Patch(':id')

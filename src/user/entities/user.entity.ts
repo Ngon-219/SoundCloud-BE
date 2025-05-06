@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Like, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Song } from '../../song/entities/song.entity';
 import { Playlist } from '../../playlist/entities/playlist.entity';
+import { LikeSong } from '../../like-song/entities/like-song.entity';
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -50,4 +51,8 @@ export class User {
 
     @OneToMany(() => Playlist, (playlist) => playlist.user, { nullable: true })
     playlists: Playlist[];
+
+    @OneToMany(() => LikeSong, (like_song) => like_song.user, { nullable: true })
+    like_song: LikeSong[];
 }
+

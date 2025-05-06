@@ -28,4 +28,8 @@ export class BaseRepository<T> {
   async delete(where: FindOptionsWhere<T>): Promise<void> {
     await this.repository.delete(where);
   }
+
+  async preload(data: DeepPartial<T>): Promise<T> {
+    return this.repository.preload(data);
+  }
 }

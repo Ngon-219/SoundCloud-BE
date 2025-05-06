@@ -13,19 +13,22 @@ import { SongCategory } from '@/song/entities/song-category.entity';
 import { Category } from '@/song/entities/category.entity';
 import { CategoryController } from './controllers/category.controller';
 import { CategoryService } from './services/category.service';
+import { LikeSongRepository } from '@/repositories/like-song.repository';
+import { LikeSong } from '@/like-song/entities/like-song.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Song,
       SongCategory,
-      Category
+      Category,
+      LikeSong,
     ]),
     UploadModule,
     UserModule,
   ],
   controllers: [SongController, CategoryController],
-  providers: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService],
+  providers: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository],
   exports: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService],
 })
 export class SongModule {}

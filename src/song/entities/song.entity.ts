@@ -5,6 +5,7 @@ import { Column } from "typeorm/decorator/columns/Column";
 import { SongCategory } from "./song-category.entity";
 import { OneToMany } from "typeorm/decorator/relations/OneToMany";
 import { SongPlaylist } from "@/playlist/entities/song-playlist.entity";
+import { LikeSong } from "@/like-song/entities/like-song.entity";
 
 export enum SongStatus {
     PENDING = 'pending',
@@ -38,8 +39,11 @@ export class Song {
     @Column({ name: 'duration', type: 'int', nullable: true })
     duration: number;
 
-    @Column({ name: 'view', type: 'text', nullable: true })
+    @Column({ name: 'view', type: 'int', nullable: true })
     view: number;
+
+    @Column({ name: 'name', type: 'text', nullable: true })
+    name: string;
 
     @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
@@ -52,4 +56,7 @@ export class Song {
 
     @OneToMany(() => SongPlaylist, (song_playlist) => song_playlist.song, { nullable: true })
     song_playlist: SongPlaylist[];
+
+    @OneToMany(() => LikeSong, (like_song) => like_song.song, { nullable: true })
+    like_song: LikeSong[];
 }

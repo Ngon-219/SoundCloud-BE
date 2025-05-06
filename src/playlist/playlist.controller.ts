@@ -22,6 +22,8 @@ export class PlaylistController {
   }
 
   @Get()
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
   findAll() {
     return this.playlistService.findAll();
   }
