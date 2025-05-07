@@ -7,6 +7,7 @@ import { OneToMany } from "typeorm/decorator/relations/OneToMany";
 import { SongPlaylist } from "@/playlist/entities/song-playlist.entity";
 import { LikeSong } from "@/like-song/entities/like-song.entity";
 import { ListeningHistory } from "@/user/entities/listening-history.entity";
+import { Report } from "@/report/entities/report.entity";
 
 export enum SongStatus {
     PENDING = 'pending',
@@ -63,4 +64,7 @@ export class Song {
 
     @OneToMany(() => ListeningHistory, (listening_history) => listening_history.song, { nullable: true })
     listening_history: ListeningHistory[];
+
+    @OneToMany(() => Report, (report) => report.song, {nullable: false})
+    report: Report;
 }
