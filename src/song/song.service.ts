@@ -14,6 +14,7 @@ import { CategoryRepository } from '@/repositories/category.repository';
 import { SongCategoryRepository } from '@/repositories/songCategory.repository';
 import { LikeSong } from '@/like-song/entities/like-song.entity';
 import { LikeSongRepository } from '@/repositories/like-song.repository';
+import { ListeningHistoryRepo } from '@/repositories/listening-history.repository';
 
 export enum folderName  {
   music = "music",
@@ -29,6 +30,7 @@ export class SongService {
     private categoryRepository: CategoryRepository,
     private songCategoryRepository: SongCategoryRepository,
     private readonly LikeSongRepository: LikeSongRepository,
+    private readonly listeningHistoryRepository: ListeningHistoryRepo,
   ) {
 
   }
@@ -104,6 +106,13 @@ export class SongService {
 
     await this.songRepository.save(updateView);
 
+    const listeningHistory = await this.listeningHistoryRepository.create({
+      user: user,
+      song: song,
+    });
+    
+    await this.listeningHistoryRepository.save(listeningHistory);
+
     const {user: _user, ...rest} = song;
   
     return {
@@ -129,4 +138,13 @@ export class SongService {
   remove(id: string) {
     return this.songRepository.delete({ song_id: id }); 
   }
+
+  async getRandomSongId() {
+    const songs = await this.songRepository.getSongRandom();
+    if (!songs) {
+      throw new Error('Song not found');
+    }
+    return songs;
+  }
+
 }

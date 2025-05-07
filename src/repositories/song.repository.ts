@@ -38,4 +38,12 @@ export class SongRepository extends BaseRepository<Song> {
       .getOne();
   }
 
+  async getSongRandom() {
+    return this.songRepo
+      .createQueryBuilder('song')
+      .orderBy('RANDOM()')
+      .take(1)
+      .getOne();
+  }
+
 }

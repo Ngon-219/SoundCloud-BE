@@ -16,13 +16,20 @@ export class LikeSongRepository extends BaseRepository<LikeSong> {
   }
 
   async getYourLikeSong(user: User): Promise<LikeSong[]> {
-    return this.likeSongRepo.find({
-      where: {
-        user: {user_id: user.user_id},
-        status: true,
-      },
-      relations: ['song'],
-    });
+    // return this.likeSongRepo.find({
+    //   where: {
+    //     user: {user_id: user.user_id},
+    //     status: true,
+    //   },
+    //   relations: ['song'],
+    // });
+
+    return this.likeSongRepo.createQueryBuilder('like_song')
+      .leftJoinAndSelect('like_song.song', 'song')
+      .where('like_song.user = :userId', { userId: user.user_id })
+      .andWhere('like_song.status = :status', { status: true })
+      .leftJoinAndSelect('song.user', 'user')
+      .getMany();
   }
 
   async checkLikeSong(user: User, song: any): Promise<boolean> {

@@ -15,6 +15,8 @@ import { CategoryController } from './controllers/category.controller';
 import { CategoryService } from './services/category.service';
 import { LikeSongRepository } from '@/repositories/like-song.repository';
 import { LikeSong } from '@/like-song/entities/like-song.entity';
+import { ListeningHistory } from '@/user/entities/listening-history.entity';
+import { ListeningHistoryRepo } from '@/repositories/listening-history.repository';
 
 @Module({
   imports: [
@@ -23,12 +25,13 @@ import { LikeSong } from '@/like-song/entities/like-song.entity';
       SongCategory,
       Category,
       LikeSong,
+      ListeningHistory
     ]),
     UploadModule,
     UserModule,
   ],
   controllers: [SongController, CategoryController],
-  providers: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository],
-  exports: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService],
+  providers: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository, ListeningHistoryRepo],
+  exports: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository, ListeningHistoryRepo],
 })
 export class SongModule {}
