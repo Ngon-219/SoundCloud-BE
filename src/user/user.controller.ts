@@ -2,6 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtGuard } from '@/auth/guards/jwt.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UseGuards } from '@nestjs/common/decorators';
 
 @Controller('user')
 export class UserController {
@@ -12,6 +15,13 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Get("artist")
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  getArtist() {
+    return this.userService.getArtist();
+  }
+
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -19,7 +29,7 @@ export class UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne(id);
   }
 
   @Patch(':id')
