@@ -19,6 +19,8 @@ import { LikeSong } from './like-song/entities/like-song.entity';
 import { ListeningHistory } from './user/entities/listening-history.entity';
 import { ReportModule } from './report/report.module';
 import { Report } from './report/entities/report.entity';
+import { CommentModule } from './comment/comment.module';
+import { Comment } from './comment/entities/comment.entity';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { Report } from './report/entities/report.entity';
       port: 5432,
       password: 'admin',
       username: 'admin',
-      entities: [User, Song, SongCategory, Category, Playlist, SongPlaylist, LikeSong, ListeningHistory, Report],
+      entities: [User, Song, SongCategory, Category, Playlist, SongPlaylist, LikeSong, ListeningHistory, Report, Comment],
       database: 'soundcloud',
       synchronize: true,
       logging: true,
@@ -44,6 +46,7 @@ import { Report } from './report/entities/report.entity';
     PlaylistModule,
     LikeSongModule,
     ReportModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthModule],

@@ -23,7 +23,7 @@ export class ReportController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.reportService.findOne(+id);
+    return this.reportService.findOne(id);
   }
 
   @Patch(':id')

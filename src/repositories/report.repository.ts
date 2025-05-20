@@ -14,5 +14,13 @@ export class ReportRepository extends BaseRepository<Report> {
   ) {
     super(reportRepo);
   }
+
+  async getReportBySongId(songId) {
+    return this.reportRepo.createQueryBuilder('report')
+      .innerJoinAndSelect('report.song', 'song')
+      .innerJoinAndSelect('report.user', 'user')
+      .where('song.song_id = :songId', {songId})
+      .getMany();
+  }
   
 }

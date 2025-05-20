@@ -4,6 +4,7 @@ import { Playlist } from '../../playlist/entities/playlist.entity';
 import { LikeSong } from '../../like-song/entities/like-song.entity';
 import { ListeningHistory } from './listening-history.entity';
 import { Report } from '@/report/entities/report.entity';
+import { Comment } from '@/comment/entities/comment.entity';
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -62,5 +63,8 @@ export class User {
 
     @OneToMany(() => Report, (report) => report.user, {nullable: false})
     report: Report
+
+    @OneToMany(() => Comment, (comment) => comment.user, {nullable: false})
+    comment: Comment
 }
 

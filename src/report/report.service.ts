@@ -35,8 +35,8 @@ export class ReportService {
     return `This action returns all report`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} report`;
+  findOne(id: string) {
+    return this.reportRepo.getReportBySongId(id);
   }
 
   update(id: number, updateReportDto: UpdateReportDto) {

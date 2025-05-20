@@ -4,7 +4,7 @@ import { Entity, ManyToOne, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity({name: "report"})
 export class Report {
-    @PrimaryGeneratedColumn('uuid', {name: 'like_song_id'})
+    @PrimaryGeneratedColumn('uuid', {name: 'report_id'})
     report_id: string;
 
     @ManyToOne(() => Song, (song) => song.report, {nullable: false})
@@ -17,5 +17,5 @@ export class Report {
     content: string;
 
      @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-        created_at: Date;
+    created_at: Date;
 }

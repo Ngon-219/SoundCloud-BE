@@ -8,6 +8,7 @@ import { SongPlaylist } from "@/playlist/entities/song-playlist.entity";
 import { LikeSong } from "@/like-song/entities/like-song.entity";
 import { ListeningHistory } from "@/user/entities/listening-history.entity";
 import { Report } from "@/report/entities/report.entity";
+import { Comment } from "@/comment/entities/comment.entity";
 
 export enum SongStatus {
     PENDING = 'pending',
@@ -67,4 +68,7 @@ export class Song {
 
     @OneToMany(() => Report, (report) => report.song, {nullable: false})
     report: Report;
+    
+    @OneToMany(() => Comment, (comment) => comment.song, {nullable: false})
+    comment: Comment;
 }
