@@ -10,6 +10,7 @@ import { UploadModule } from '@/upload/upload.module';
 import { UploadService } from '@/upload/upload.service';
 import { SongRepository } from '@/repositories/song.repository';
 import { Song } from '@/song/entities/song.entity';
+import { Telegraf } from 'telegraf';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { Song } from '@/song/entities/song.entity';
     UploadModule, 
   ],
   controllers: [PlaylistController],
-  providers: [PlaylistService, PlaylistRepository, SongPlaylistRepository, UploadService, SongRepository],
+  providers: [PlaylistService, PlaylistRepository, SongPlaylistRepository, UploadService, SongRepository, Telegraf],
   exports: [PlaylistService, PlaylistRepository, SongPlaylistRepository, SongRepository],
 })
 export class PlaylistModule {}

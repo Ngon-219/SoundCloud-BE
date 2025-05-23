@@ -15,6 +15,8 @@ import { SongCategoryRepository } from '@/repositories/songCategory.repository';
 import { LikeSong } from '@/like-song/entities/like-song.entity';
 import { LikeSongRepository } from '@/repositories/like-song.repository';
 import { ListeningHistoryRepo } from '@/repositories/listening-history.repository';
+import { Context, Telegraf } from 'telegraf';
+import { InjectBot } from 'nestjs-telegraf';
 
 export enum folderName  {
   music = "music",
@@ -31,56 +33,72 @@ export class SongService {
     private songCategoryRepository: SongCategoryRepository,
     private readonly LikeSongRepository: LikeSongRepository,
     private readonly listeningHistoryRepository: ListeningHistoryRepo,
+    @InjectBot() private readonly bot: Telegraf<Context>
   ) {
 
   }
 
   async create(file: Express.Multer.File[], user: User, category_id: string[], song_name: string) {
-    const metadata = await parseBuffer(file[0].buffer, file[0].mimetype);
-    const durationInSeconds = metadata.format.duration || 0;
-    const uploadMusic = await this.uploadService.create(file[0], folderName.music);
-    const uploadImage = await this.uploadService.create(file[1], folderName.image);
+    console.log("user chat id", process.env.USER_TELEGRAM_CHAT_ID);
+    try {
+      const metadata = await parseBuffer(file[0].buffer, file[0].mimetype);
+      const durationInSeconds = metadata.format.duration || 0;
+      const uploadMusic = await this.uploadService.create(file[0], folderName.music);
+      const uploadImage = await this.uploadService.create(file[1], folderName.image);
 
-    const category = [];
-    category_id = Array.isArray(category_id) ? category_id : [category_id];
-    for (let i = 0; i < category_id.length; i++) {
-      console.log("categoryItem", category_id[i]);
-      const categoryItem = await this.categoryRepository.findOne({category_id: category_id[i]});
-      if (categoryItem) {
-        category.push(categoryItem);
-      } else {
-        throw new Error('Category not found');
+      const category = [];
+      category_id = Array.isArray(category_id) ? category_id : [category_id];
+      for (let i = 0; i < category_id.length; i++) {
+        console.log("categoryItem", category_id[i]);
+        const categoryItem = await this.categoryRepository.findOne({category_id: category_id[i]});
+        if (categoryItem) {
+          category.push(categoryItem);
+        } else {
+          throw new Error('Category not found');
+        }
       }
-    }
 
-    const newSong = await this.songRepository.create(
-      {
-        link_song: uploadMusic.url,
-        song_image: uploadImage.url,
-        status: SongStatus.PENDING,
-        view: 0,
-        created_at: new Date(),
-        updated_at: new Date(),
-        user: user,
-        duration: Math.floor(durationInSeconds),
-        name: song_name,
+      const newSong = await this.songRepository.create(
+        {
+          link_song: uploadMusic.url,
+          song_image: uploadImage.url,
+          status: SongStatus.PENDING,
+          view: 0,
+          created_at: new Date(),
+          updated_at: new Date(),
+          user: user,
+          duration: Math.floor(durationInSeconds),
+          name: song_name,
+        }
+      )
+
+      await this.songRepository.save(newSong);
+
+      const songCategoryEntities = category.map((item) =>
+        this.songCategoryRepository.create({
+          song: newSong,
+          category: item,
+        })
+      );
+    
+    this.songCategoryRepository.saveMany(songCategoryEntities)
+    
+      await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
+        Have new upload song from user ${user.username} with user email ${user.email}🫵🫵🫵
+      `)
+
+      return {
+        message: "upload song successfully",
+        song: newSong
       }
-    )
-
-    await this.songRepository.save(newSong);
-
-    const songCategoryEntities = category.map((item) =>
-      this.songCategoryRepository.create({
-        song: newSong,
-        category: item,
-      })
-    );
-  
-  this.songCategoryRepository.saveMany(songCategoryEntities)
-
-    return {
-      message: "upload song successfully",
-      song: newSong
+    } catch(err) {
+      await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
+        Fail to upload song user ${user.username} with user email ${user.email}⚠️⚠️⚠️
+      `)
+      return {
+        message: "fail to upload",
+        err: err
+      }
     }
   }
 

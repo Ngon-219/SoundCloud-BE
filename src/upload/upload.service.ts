@@ -4,10 +4,13 @@ import { UpdateUploadDto } from './dto/update-upload.dto';
 import { v2 } from 'cloudinary';
 import * as multer from 'multer';
 import { Readable } from 'stream';
+import { Context, Telegraf } from 'telegraf';
 
 @Injectable()
 export class UploadService {
-  constructor() {
+  constructor(
+    private readonly bot: Telegraf<Context>
+  ) {
     v2.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
