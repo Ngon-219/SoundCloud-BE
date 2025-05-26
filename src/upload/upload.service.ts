@@ -5,11 +5,13 @@ import { v2 } from 'cloudinary';
 import * as multer from 'multer';
 import { Readable } from 'stream';
 import { Context, Telegraf } from 'telegraf';
+import { MailService } from '@/mail/mail.service';
 
 @Injectable()
 export class UploadService {
   constructor(
-    private readonly bot: Telegraf<Context>
+    // private readonly bot: Telegraf<Context>
+    private readonly mailService: MailService
   ) {
     v2.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:15
@@ -9,6 +11,8 @@ services:
       POSTGRES_DB: soundcloud
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - backend
 
@@ -23,6 +27,16 @@ services:
       - "8080:80"
     depends_on:
       - db
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    container_name: redis_container
+    restart: on-failure:3
+    command: ["redis-server", "--requirepass", "thoitrangdeptrai"]
+    ports:
+      - "6379:6379"
     networks:
       - backend
 

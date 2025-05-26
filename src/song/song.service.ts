@@ -17,6 +17,7 @@ import { LikeSongRepository } from '@/repositories/like-song.repository';
 import { ListeningHistoryRepo } from '@/repositories/listening-history.repository';
 import { Context, Telegraf } from 'telegraf';
 import { InjectBot } from 'nestjs-telegraf';
+import { MailService } from '@/mail/mail.service';
 
 export enum folderName  {
   music = "music",
@@ -33,7 +34,8 @@ export class SongService {
     private songCategoryRepository: SongCategoryRepository,
     private readonly LikeSongRepository: LikeSongRepository,
     private readonly listeningHistoryRepository: ListeningHistoryRepo,
-    @InjectBot() private readonly bot: Telegraf<Context>
+    // @InjectBot() private readonly bot: Telegraf<Context>
+    private readonly mailService: MailService
   ) {
 
   }
@@ -83,18 +85,22 @@ export class SongService {
     
     this.songCategoryRepository.saveMany(songCategoryEntities)
     
-      await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
-        Have new upload song from user ${user.username} with user email ${user.email}🫵🫵🫵
-      `)
+      // await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
+      //   Have new upload song from user ${user.username} with user email ${user.email}🫵🫵🫵
+      // `)
+
+      await this.mailService.sendMail(`<p>Have new upload song from user <b>${user.username}</b> with user email <b>${user.email}</b>🫵🫵🫵<p>`)
 
       return {
         message: "upload song successfully",
         song: newSong
       }
     } catch(err) {
-      await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
-        Fail to upload song user ${user.username} with user email ${user.email}⚠️⚠️⚠️
-      `)
+      // await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
+      //   Fail to upload song user ${user.username} with user email ${user.email}⚠️⚠️⚠️
+      // `)
+
+      await this.mailService.sendMail(`<p>Fail to upload song user <b>${user.username}</b> with user email <b>${user.email}</b>⚠️⚠️⚠️</p>`)
       return {
         message: "fail to upload",
         err: err

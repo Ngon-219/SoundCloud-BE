@@ -18,6 +18,7 @@ import { LikeSong } from '@/like-song/entities/like-song.entity';
 import { ListeningHistory } from '@/user/entities/listening-history.entity';
 import { ListeningHistoryRepo } from '@/repositories/listening-history.repository';
 import { Telegraf } from 'telegraf';
+import { MailService } from '@/mail/mail.service';
 
 @Module({
   imports: [
@@ -32,7 +33,7 @@ import { Telegraf } from 'telegraf';
     UserModule,
   ],
   controllers: [SongController, CategoryController],
-  providers: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository, ListeningHistoryRepo, Telegraf],
-  exports: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository, ListeningHistoryRepo],
+  providers: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository, ListeningHistoryRepo, MailService],
+  exports: [SongService, SongRepository, UploadService, CategoryRepository, SongCategoryRepository, CategoryService, LikeSongRepository, ListeningHistoryRepo, MailService],
 })
 export class SongModule {}

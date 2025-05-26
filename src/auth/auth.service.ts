@@ -7,13 +7,15 @@ import { UserStatus } from '@/user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { InjectBot } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
+import { MailService } from '@/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
-    @InjectBot() private readonly bot: Telegraf<Context>
+    // @InjectBot() private readonly bot: Telegraf<Context>
+    private readonly mailService: MailService
   ) {}
 
   async signIn(data: SignInDto): Promise<any> {
@@ -32,9 +34,11 @@ export class AuthService {
         updated_at: new Date(),
       });
       await this.userRepository.save(newUser);
-      await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
-        Have new user ${newUser.username} with user email ${newUser.email} 😻😻😻
-      `)
+      // await this.bot.telegram.sendMessage(process.env.USER_TELEGRAM_CHAT_ID, `
+      //   Have new user ${newUser.username} with user email ${newUser.email} 😻😻😻
+      // `)
+
+      await this.mailService.sendMail(`<p>Have new user <b>${newUser.username}</b> with user email <b>${newUser.email}</b> 😻😻😻</p>`);
     }
 
     const payload = { email: data.email };

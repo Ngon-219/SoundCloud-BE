@@ -31,6 +31,7 @@ import { Report } from './report/entities/report.entity';
 
 import { CommentModule } from './comment/comment.module';
 import { Comment } from './comment/entities/comment.entity';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -53,9 +54,9 @@ import { Comment } from './comment/entities/comment.entity';
       }),
       inject: [ConfigService],
     }),
-    TelegrafModule.forRoot({
-      token: process.env.TELEGRAM_BOT_TOKEN,
-    }),
+    // TelegrafModule.forRoot({
+    //   token: process.env.TELEGRAM_BOT_TOKEN,
+    // }),
     UserModule,
     AuthModule,
     UploadModule,
@@ -64,6 +65,7 @@ import { Comment } from './comment/entities/comment.entity';
     LikeSongModule,
     ReportModule,
     CommentModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
