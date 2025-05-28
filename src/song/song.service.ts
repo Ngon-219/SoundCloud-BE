@@ -18,6 +18,7 @@ import { ListeningHistoryRepo } from '@/repositories/listening-history.repositor
 import { Context, Telegraf } from 'telegraf';
 import { InjectBot } from 'nestjs-telegraf';
 import { MailService } from '@/mail/mail.service';
+import { PublisherService } from '@/publisher/publisher.service';
 
 export enum folderName  {
   music = "music",
@@ -35,7 +36,8 @@ export class SongService {
     private readonly LikeSongRepository: LikeSongRepository,
     private readonly listeningHistoryRepository: ListeningHistoryRepo,
     // @InjectBot() private readonly bot: Telegraf<Context>
-    private readonly mailService: MailService
+    private readonly mailService: MailService,
+    private readonly publisher_service: PublisherService
   ) {
 
   }
@@ -89,7 +91,7 @@ export class SongService {
       //   Have new upload song from user ${user.username} with user email ${user.email}🫵🫵🫵
       // `)
 
-      await this.mailService.sendMail(`<p>Have new upload song from user <b>${user.username}</b> with user email <b>${user.email}</b>🫵🫵🫵<p>`)
+      await this.publisher_service.sendMailNoti(`<p>Have new upload song from user <b>${user.username}</b> with user email <b>${user.email}</b>🫵🫵🫵<p>`)
 
       return {
         message: "upload song successfully",
@@ -100,7 +102,7 @@ export class SongService {
       //   Fail to upload song user ${user.username} with user email ${user.email}⚠️⚠️⚠️
       // `)
 
-      await this.mailService.sendMail(`<p>Fail to upload song user <b>${user.username}</b> with user email <b>${user.email}</b>⚠️⚠️⚠️</p>`)
+      await this.publisher_service.sendMailNoti(`<p>Fail to upload song user <b>${user.username}</b> with user email <b>${user.email}</b>⚠️⚠️⚠️</p>`)
       return {
         message: "fail to upload",
         err: err

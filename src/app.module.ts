@@ -32,12 +32,24 @@ import { Report } from './report/entities/report.entity';
 import { CommentModule } from './comment/comment.module';
 import { Comment } from './comment/entities/comment.entity';
 import { MailModule } from './mail/mail.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { RedisOptions } from './config/redis-config.config';
+import { redisStore } from 'cache-manager-redis-store';
+import { ConsumerModule } from './consumer/consumer.module';
+import { PublisherModule } from './publisher/publisher.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+    }),
+    CacheModule.register({
+      store: redisStore,
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -66,6 +78,8 @@ import { MailModule } from './mail/mail.module';
     ReportModule,
     CommentModule,
     MailModule,
+    ConsumerModule,
+    PublisherModule,
   ],
   controllers: [AppController],
   providers: [AppService],

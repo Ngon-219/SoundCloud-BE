@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectBot } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
 import { MailService } from '@/mail/mail.service';
+import { PublisherService } from '@/publisher/publisher.service';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,8 @@ export class AuthService {
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
     // @InjectBot() private readonly bot: Telegraf<Context>
-    private readonly mailService: MailService
+    private readonly publisher_service: PublisherService,
+    private readonly mailService: MailService,
   ) {}
 
   async signIn(data: SignInDto): Promise<any> {
@@ -38,7 +40,7 @@ export class AuthService {
       //   Have new user ${newUser.username} with user email ${newUser.email} 😻😻😻
       // `)
 
-      await this.mailService.sendMail(`<p>Have new user <b>${newUser.username}</b> with user email <b>${newUser.email}</b> 😻😻😻</p>`);
+      await this.publisher_service.sendMailNoti(`<p>Have new user <b>${newUser.username}</b> with user email <b>${newUser.email}</b> 😻😻😻</p>`);
     }
 
     const payload = { email: data.email };
@@ -46,5 +48,9 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     }
+  }
+
+  async logOut(access_token: String) {
+
   }
 }
