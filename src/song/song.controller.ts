@@ -35,6 +35,13 @@ export class SongController {
     return this.songService.getRandomSongId();
   }
 
+  @Get('your-song')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  getYourSong(@Req() req: any) {
+    return this.songService.getYourSong(req.user);
+  }
+
   @Get()
   findAll() {
     return this.songService.findAll();

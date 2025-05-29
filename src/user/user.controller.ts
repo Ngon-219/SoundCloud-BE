@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtGuard } from '@/auth/guards/jwt.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { UseGuards } from '@nestjs/common/decorators';
+import { Req, UseGuards } from '@nestjs/common/decorators';
 
 @Controller('user')
 export class UserController {
@@ -18,8 +18,8 @@ export class UserController {
   @Get("artist")
   @UseGuards(JwtGuard)
   @ApiBearerAuth('jwt')
-  getArtist() {
-    return this.userService.getArtist();
+  getArtist(@Req() req: any) {
+    return this.userService.getArtist(req.user);
   }
 
   @Get()

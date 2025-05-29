@@ -19,6 +19,7 @@ export class PlaylistRepository extends BaseRepository<Playlist> {
     .createQueryBuilder('playlist')
     .leftJoinAndSelect('playlist.songPlaylist', 'song_playlist')
     .leftJoinAndSelect('song_playlist.song', 'song')
+    .leftJoinAndSelect('song.user', 'user')
     .where('playlist.playlist_id = :playlistId', { playlistId })
       .getOne(); // dùng getOne vì playlistId là duy nhất
   }

@@ -1,10 +1,12 @@
-import { Column, Entity, Like, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Like, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, Transaction } from 'typeorm';
 import { Song } from '../../song/entities/song.entity';
 import { Playlist } from '../../playlist/entities/playlist.entity';
 import { LikeSong } from '../../like-song/entities/like-song.entity';
 import { ListeningHistory } from './listening-history.entity';
 import { Report } from '@/report/entities/report.entity';
 import { Comment } from '@/comment/entities/comment.entity';
+import { SearchHistory } from '@/search_history/entities/search_history.entity';
+import { TransactionTable } from '@/paypal/entities/transaction.entity';
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -66,5 +68,11 @@ export class User {
 
     @OneToMany(() => Comment, (comment) => comment.user, {nullable: false})
     comment: Comment
+
+    @OneToMany(() => SearchHistory, (search_history) => search_history.user, {nullable: true})
+    search_history: SearchHistory
+
+    @OneToMany(() => TransactionTable, (transaction_table) => transaction_table.user, {nullable: true})
+    transactions: TransactionTable[]
 }
 

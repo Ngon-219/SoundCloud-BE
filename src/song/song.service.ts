@@ -103,6 +103,7 @@ export class SongService {
       // `)
 
       await this.publisher_service.sendMailNoti(`<p>Fail to upload song user <b>${user.username}</b> with user email <b>${user.email}</b>⚠️⚠️⚠️</p>`)
+      console.error('err when upload music: ', err);
       return {
         message: "fail to upload",
         err: err
@@ -171,5 +172,10 @@ export class SongService {
       throw new Error('Song not found');
     }
     return songs;
+  }
+
+  async getYourSong(user: User) {
+    console.log('user: ', user);
+    return await this.songRepository.getYourSong(user);
   }
 }

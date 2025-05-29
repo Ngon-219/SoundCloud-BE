@@ -13,9 +13,10 @@ export class UserRepository extends BaseRepository<User> {
     super(userRepo);
   }
 
-  async getArtistUser(): Promise<User[]> {
+  async getArtistUser(user: User): Promise<User[]> {
     return this.userRepo.createQueryBuilder('user')
       .innerJoinAndSelect('user.songs', 'song')
+      .where('user.user_id != :userId', {userId: user.user_id})
       .getMany();
   }
 

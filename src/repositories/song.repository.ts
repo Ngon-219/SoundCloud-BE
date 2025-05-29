@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Song } from "@/song/entities/song.entity";
 import { BaseRepository } from "@/repositories/baseRepo";
 import { Repository } from "typeorm";
+import { User } from "@/user/entities/user.entity";
 
 @Injectable()
 export class SongRepository extends BaseRepository<Song> {
@@ -44,6 +45,14 @@ export class SongRepository extends BaseRepository<Song> {
       .orderBy('RANDOM()')
       .take(1)
       .getOne();
+  }
+
+  async getYourSong(user: User) {
+    return this.songRepo
+    .createQueryBuilder('song')
+    .leftJoinAndSelect('song.user', 'user')
+    .where('user.user_id = :userId', {userId: user.user_id})
+    .getMany();
   }
 
 }

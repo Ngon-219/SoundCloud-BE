@@ -37,6 +37,10 @@ import { RedisOptions } from './config/redis-config.config';
 import { redisStore } from 'cache-manager-redis-store';
 import { ConsumerModule } from './consumer/consumer.module';
 import { PublisherModule } from './publisher/publisher.module';
+import { SearchHistoryModule } from './search_history/search_history.module';
+import { SearchHistory } from './search_history/entities/search_history.entity';
+import { PaypalModule } from './paypal/paypal.module';
+import { TransactionTable } from './paypal/entities/transaction.entity';
 
 @Module({
   imports: [
@@ -60,7 +64,7 @@ import { PublisherModule } from './publisher/publisher.module';
         username: configService.get<string>('DATABASE_USERNAME'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [User, ListeningHistory, Song, SongCategory, Category, Playlist, SongPlaylist, LikeSong, Report, Comment],
+        entities: [User, ListeningHistory, Song, SongCategory, Category, Playlist, SongPlaylist, LikeSong, Report, Comment, SearchHistory, TransactionTable],
         synchronize: true,
         logging: false,
       }),
@@ -80,6 +84,8 @@ import { PublisherModule } from './publisher/publisher.module';
     MailModule,
     ConsumerModule,
     PublisherModule,
+    SearchHistoryModule,
+    PaypalModule,
   ],
   controllers: [AppController],
   providers: [AppService],

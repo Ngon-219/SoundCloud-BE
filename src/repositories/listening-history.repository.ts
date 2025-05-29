@@ -23,12 +23,14 @@ export class ListeningHistoryRepo extends BaseRepository<ListeningHistory> {
         //     relations: ['song'],
         // });
         return this.listeningHistoryRepository.createQueryBuilder('listening_history')
-            .leftJoinAndSelect('listening_history.song', 'song')
-            .where('listening_history.user = :userId', { userId: userId })
-            .leftJoinAndSelect('song.user', 'user')
-            .orderBy('listening_history.created_at', 'DESC')
-            .limit(20)
-            .getMany();
+        .leftJoinAndSelect('listening_history.song', 'song')
+        .leftJoinAndSelect('song.user', 'user')
+        .where('listening_history.user = :userId', { userId })
+        .distinctOn(['song.song_id']) 
+        .orderBy('song.song_id', 'ASC') 
+        .addOrderBy('listening_history.created_at', 'DESC')
+        .limit(20)
+        .getMany();
     }
 
 }

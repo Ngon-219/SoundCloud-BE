@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from '@/repositories/userRepository';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -29,7 +30,7 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  async getArtist() {
-    return this.userRepository.getArtistUser();
+  async getArtist(user: User) {
+    return this.userRepository.getArtistUser(user);
   }
 }
