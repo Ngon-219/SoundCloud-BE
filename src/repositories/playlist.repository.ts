@@ -23,5 +23,12 @@ export class PlaylistRepository extends BaseRepository<Playlist> {
     .where('playlist.playlist_id = :playlistId', { playlistId })
       .getOne(); // dùng getOne vì playlistId là duy nhất
   }
+
+  async getPlaylistSearch(keyword: string) {
+    return await this.playlistRepo.createQueryBuilder('playlist')
+      .where(`unaccent(lower(playlist.playlist_name)) ILIKE unaccent(lower(:keyword))`, { keyword: `%${keyword}%` })
+      .getMany();
+  }
+
   
 }

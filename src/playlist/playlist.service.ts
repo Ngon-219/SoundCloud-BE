@@ -59,11 +59,47 @@ export class PlaylistService {
     return playlist;
   }
 
-  update(id: number, updatePlaylistDto: UpdatePlaylistDto) {
+  update(id: string, songId: string) {
     return `This action updates a #${id} playlist`;
   }
 
   remove(id: number) {
     return `This action removes a #${id} playlist`;
   }
+
+async addSongToPlaylist(playlistId: string, songId: string) {
+  // Tìm playlist theo ID
+  const playlist = await this.playlistRepository.findOne({ playlist_id: playlistId });
+  if (!playlist) {
+    throw new Error('Playlist not found');
+  }
+
+  // Tìm bài hát theo ID
+  const song = await this.songRepository.findOne({ song_id: songId });
+  if (!song) {
+    throw new Error('Song not found');
+  }
+
+  // Kiểm tra xem bài hát đã có trong playlist chưa
+  const existing = await this.songPlaylistRepository.findOne({
+    playlist: { playlist_id: playlistId },
+    song: { song_id: songId },
+  });
+
+  if (existing) {
+    throw new Error('Song already exists in this playlist');
+  }
+
+  // Tạo liên kết bài hát và playlist
+  const songPlaylist = this.songPlaylistRepository.create({
+    playlist,
+    song,
+  });
+
+  await this.songPlaylistRepository.save(songPlaylist);
+
+  return { message: 'Song added to playlist successfully' };
+}
+
+
 }

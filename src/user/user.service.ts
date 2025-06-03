@@ -22,8 +22,8 @@ export class UserService {
     return this.userRepository.getArtistDetailById(id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userRepository.updateUserInfo(id, updateUserDto.avatarUrl, updateUserDto.username);
   }
 
   remove(id: number) {

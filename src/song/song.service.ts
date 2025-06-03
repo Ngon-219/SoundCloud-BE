@@ -19,6 +19,7 @@ import { Context, Telegraf } from 'telegraf';
 import { InjectBot } from 'nestjs-telegraf';
 import { MailService } from '@/mail/mail.service';
 import { PublisherService } from '@/publisher/publisher.service';
+import { threeDSecureAuthenticationResponseSchema } from '@paypal/paypal-server-sdk/dist/types/models/threeDSecureAuthenticationResponse';
 
 export enum folderName  {
   music = "music",
@@ -177,5 +178,9 @@ export class SongService {
   async getYourSong(user: User) {
     console.log('user: ', user);
     return await this.songRepository.getYourSong(user);
+  }
+
+  async getRandomFour() {
+    return await this.songRepository.getRandomFourSongsFromTopTen()
   }
 }

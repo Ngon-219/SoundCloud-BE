@@ -30,6 +30,21 @@ export class SongRepository extends BaseRepository<Song> {
       .take(10)
       .getMany();
   }
+
+  async getRandomFourSongsFromTopTen() {
+    const topTenSongs = await this.songRepo
+      .createQueryBuilder('song')
+      .orderBy('song.view', 'DESC')
+      .take(10)
+      .getMany();
+
+    // Random chọn 4 bài trong topTenSongs
+    const shuffled = topTenSongs.sort(() => 0.5 - Math.random()); // xáo trộn mảng
+    const randomFour = shuffled.slice(0, 4); // lấy 4 phần tử đầu tiên
+
+    return randomFour;
+  }
+
    
   async getSongById(songId: string) {
     return this.songRepo
@@ -54,5 +69,13 @@ export class SongRepository extends BaseRepository<Song> {
     .where('user.user_id = :userId', {userId: user.user_id})
     .getMany();
   }
+
+async searchSong(keyword: string) {
+  return this.songRepo
+    .createQueryBuilder('song')
+    .leftJoinAndSelect('song.user', 'user')
+    .where(`unaccent(lower(song.song_name)) ILIKE unaccent(lower(:keyword))`, { keyword: `%${keyword}%` })
+    .getMany();
+}
 
 }

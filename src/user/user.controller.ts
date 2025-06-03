@@ -23,8 +23,10 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  findAll(@Req() req:any) {
+    return this.userService.findOne(req.user.user_id);
   }
 
   @Get(':id')
@@ -32,9 +34,11 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Patch('update-user')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  update(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(req.user.user_id, updateUserDto);
   }
 
   @Delete(':id')

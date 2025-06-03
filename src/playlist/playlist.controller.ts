@@ -28,6 +28,13 @@ export class PlaylistController {
     return this.playlistService.findAll();
   }
 
+  @Patch('add-song/:id/:songId')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  addSongToPlaylist(@Param('id') id: string, @Param('songId') songId: string) {
+    return this.playlistService.addSongToPlaylist(id, songId);
+  }
+
   @UseGuards(JwtGuard)
   @ApiBearerAuth('jwt')
   @Get(':id')
@@ -35,12 +42,12 @@ export class PlaylistController {
     return this.playlistService.findOne(id);
   }
 
-  @Patch(':id')
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth('jwt')
-  update(@Param('id') id: string, @Body() updatePlaylistDto: UpdatePlaylistDto) {
-    return this.playlistService.update(+id, updatePlaylistDto);
-  }
+  // @Patch(':id')
+  // @UseGuards(JwtGuard)
+  // @ApiBearerAuth('jwt')
+  // update(@Param('id') id: string, @Body() updatePlaylistDto: UpdatePlaylistDto) {
+  //   return this.playlistService.update(id, updatePlaylistDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -41,6 +41,13 @@ export class SongController {
   getYourSong(@Req() req: any) {
     return this.songService.getYourSong(req.user);
   }
+  
+    @Get('your-random-four')
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('jwt')
+  getFourSongRandom() {
+    return this.songService.getRandomFour();
+  }
 
   @Get()
   findAll() {

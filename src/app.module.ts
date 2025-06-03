@@ -41,6 +41,7 @@ import { SearchHistoryModule } from './search_history/search_history.module';
 import { SearchHistory } from './search_history/entities/search_history.entity';
 import { PaypalModule } from './paypal/paypal.module';
 import { TransactionTable } from './paypal/entities/transaction.entity';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { TransactionTable } from './paypal/entities/transaction.entity';
     PublisherModule,
     SearchHistoryModule,
     PaypalModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
